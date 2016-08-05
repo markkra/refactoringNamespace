@@ -15,13 +15,12 @@
       // object of the chain of objects we'll build up
       // starting with the outmost scope aka the global object
       var delimiter = '.',
-          j = 0,
           tokens = [];
 
       if (stringContains(arg, delimiter)) {
         // if this arg is a multi-segment string,
         // break it down to an array of tokens
-        tokens = tokenize(arg, delimiter);
+        tokens = tokenizeString(arg, delimiter);
 
         tokens.forEach(function(propName) {
           currentObject = addPropertyToObjectIfNeeded(currentObject, propName);
@@ -72,7 +71,7 @@
   }
 
   // break a string up into tokens split on a delimiter
-  function tokenize(str, delimiter){
+  function tokenizeString(str, delimiter){
     return str.split(delimiter);
   }
 
