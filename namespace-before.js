@@ -1,13 +1,23 @@
 (function IIFE(global) {
 
+  // create or reuse the global NGAT object
   global.NGAT = global.NGAT || {};
-  
-  global.NGAT.namespace = function () {
-    var a = arguments, o, i = 0, j, d, arg;
 
-    for (; i < a.length; i++) {
+  // cache a scoped reference to global.NGAT so the lookup is only done once.
+  var NGAT = global.NGAT;
+
+  NGAT.namespace = function () {
+    var argList = convertToArray(arguments),
+        countArgs = argList.length,
+        o,
+        i = 0,
+        j,
+        d,
+        arg;
+
+    for (; i < countArgs; i++) {
       o = global;
-      arg = a[i];
+      arg = argList[i];
       if (arg.indexOf(".") > -1) {
         d = arg.split(".");
         for (j = 0; j < d.length; j++) {
@@ -22,6 +32,31 @@
     }
     return o;
   };
+
+  // tests
+  NGAT.namespace("NGAT.fred.betty.pebbles.flintsone");
+  printObject(NGAT);
+
+  /////////////////////////////////////////////////
+  // Define helper functions for use in this module
+
+  // function to convert a JavaScript object to
+  // JSON format
+  function convertToJSON(obj){
+    return JSON.stringify(obj, null, 4);
+  }
+
+  // log out a JavaScript object to the console
+  function printObject(obj){
+    console.log(convertToJSON(obj));
+  }
+
+  // convert an array-like object to a real array
+  function convertToArray(arrayLikeObj){
+    // assert arrayLikeObj object is an object with a 'length' method on it
+    // See - https://davidwalsh.name/arguments-array
+    return Array.prototype.slice.call(arrayLikeObj)
+  }
 
 })(this);
 
