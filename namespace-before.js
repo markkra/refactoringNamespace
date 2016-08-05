@@ -8,38 +8,32 @@
 
   NGAT.namespace = function () {
     var argList = convertToArray(arguments),
-        countArgs = argList.length,
-        delimiter = '.',
-        currentObject = global,
-        i = 0,
-        j = 0,
-        tokens = [],
-        countTokens,
-        arg = '';
+        currentObject = global;
 
-    for (; i < countArgs; i++) {
+    argList.forEach(function(arg) {
       // keep a 'cursor' or reference to the leaf node
       // object of the chain of objects we'll build up
       // starting with the outmost scope aka the global object
-      currentObject = global;
-
-      // the current argument to namespace we're working with
-      arg = argList[i];
+      var delimiter = '.',
+          j = 0,
+          tokens = [];
 
       if (stringContains(arg, delimiter)) {
-        // if this arg is a multisegment string
+        // if this arg is a multi-segment string,
+        // break it down to an array of tokens
         tokens = tokenize(arg, delimiter);
-        countTokens = tokens.length;
-        for (j = 0; j < countTokens; j++) {
-          currentObject[tokens[j]] = currentObject[tokens[j]] || {};
-          currentObject = currentObject[tokens[j]];
-        }
+
+        tokens.forEach(function(propName) {
+          currentObject[propName] = currentObject[propName] || {};
+          currentObject = currentObject[propName];
+        });
+
       }
       else {
         currentObject[arg] = currentObject[arg] || {};
         currentObject = currentObject[arg];
       }
-    }
+    });
 
     return currentObject;
   };
