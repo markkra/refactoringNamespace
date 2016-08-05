@@ -24,14 +24,12 @@
         tokens = tokenize(arg, delimiter);
 
         tokens.forEach(function(propName) {
-          currentObject[propName] = currentObject[propName] || {};
-          currentObject = currentObject[propName];
+          currentObject = addPropertyToObjectIfNeeded(currentObject, propName);
         });
 
       }
       else {
-        currentObject[arg] = currentObject[arg] || {};
-        currentObject = currentObject[arg];
+        currentObject = addPropertyToObjectIfNeeded(currentObject, arg);
       }
     });
 
@@ -39,8 +37,13 @@
   };
 
   // tests
+  // with tokens
   NGAT.namespace("NGAT.fred.betty.pebbles.flintsone");
   printObject(NGAT);
+
+  // without tokens
+  NGAT.namespace("aarpMember");
+  printObject(global);
 
   /////////////////////////////////////////////////
   // Define helper functions for use in this module
@@ -72,5 +75,15 @@
   function tokenize(str, delimiter){
     return str.split(delimiter);
   }
+
+  // this function causes side effects. The incoming parameter
+  // 'obj' is mutated...
+  function addPropertyToObjectIfNeeded(obj, propName){
+    obj[propName] = obj[propName] || {};
+
+    // returns a reference to the new (or existing) object
+    return obj[propName];
+  }
+
 })(this);
 
