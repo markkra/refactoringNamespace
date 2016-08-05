@@ -10,29 +10,38 @@
     var argList = convertToArray(arguments),
         countArgs = argList.length,
         delimiter = '.',
-        o = global,
+        currentObject = global,
         i = 0,
         j = 0,
-        d = '',
+        tokens = [],
+        countTokens,
         arg = '';
 
     for (; i < countArgs; i++) {
-      o = global;
+      // keep a 'cursor' or reference to the leaf node
+      // object of the chain of objects we'll build up
+      // starting with the outmost scope aka the global object
+      currentObject = global;
+
+      // the current argument to namespace we're working with
       arg = argList[i];
+
       if (stringContains(arg, delimiter)) {
-        d = tokenize(arg, delimiter);
-        for (j = 0; j < d.length; j++) {
-          o[d[j]] = o[d[j]] || {};
-          o = o[d[j]];
+        // if this arg is a multisegment string
+        tokens = tokenize(arg, delimiter);
+        countTokens = tokens.length;
+        for (j = 0; j < countTokens; j++) {
+          currentObject[tokens[j]] = currentObject[tokens[j]] || {};
+          currentObject = currentObject[tokens[j]];
         }
       }
       else {
-        o[arg] = o[arg] || {};
-        o = o[arg];
+        currentObject[arg] = currentObject[arg] || {};
+        currentObject = currentObject[arg];
       }
     }
 
-    return o;
+    return currentObject;
   };
 
   // tests
