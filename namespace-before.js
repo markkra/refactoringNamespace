@@ -9,17 +9,18 @@
   NGAT.namespace = function () {
     var argList = convertToArray(arguments),
         countArgs = argList.length,
-        o,
+        delimiter = '.',
+        o = global,
         i = 0,
-        j,
-        d,
-        arg;
+        j = 0,
+        d = '',
+        arg = '';
 
     for (; i < countArgs; i++) {
       o = global;
       arg = argList[i];
-      if (arg.indexOf(".") > -1) {
-        d = arg.split(".");
+      if (stringContains(arg, delimiter)) {
+        d = arg.split(delimiter);
         for (j = 0; j < d.length; j++) {
           o[d[j]] = o[d[j]] || {};
           o = o[d[j]];
@@ -30,6 +31,7 @@
         o = o[arg];
       }
     }
+    
     return o;
   };
 
@@ -56,6 +58,11 @@
     // assert arrayLikeObj object is an object with a 'length' method on it
     // See - https://davidwalsh.name/arguments-array
     return Array.prototype.slice.call(arrayLikeObj)
+  }
+
+  // determine if a string contains a substring
+  function stringContains(str, subStr){
+    return str.indexOf(subStr) > -1
   }
 
 })(this);
