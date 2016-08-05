@@ -20,7 +20,7 @@
       o = global;
       arg = argList[i];
       if (stringContains(arg, delimiter)) {
-        d = arg.split(delimiter);
+        d = tokenize(arg, delimiter);
         for (j = 0; j < d.length; j++) {
           o[d[j]] = o[d[j]] || {};
           o = o[d[j]];
@@ -31,7 +31,7 @@
         o = o[arg];
       }
     }
-    
+
     return o;
   };
 
@@ -65,5 +65,9 @@
     return str.indexOf(subStr) > -1
   }
 
+  // break a string up into tokens split on a delimiter
+  function tokenize(str, delimiter){
+    return str.split(delimiter);
+  }
 })(this);
 
