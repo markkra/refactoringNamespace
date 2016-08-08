@@ -7,14 +7,14 @@
   var NGAT = global.NGAT;
 
   NGAT.namespace = function () {
-    var argList = convertToArray(arguments),
-        currentObject = global;
+    var argList = convertToArray(arguments);
 
-    argList.forEach(function(arg) {
+    var objList = argList.map(function(arg) {
       // keep a 'cursor' or reference to the leaf node
       // object of the chain of objects we'll build up
       // starting with the outmost scope aka the global object
       var delimiter = '.',
+          currentObject = global,
           tokens = [];
 
       if (stringContains(arg, delimiter)) {
@@ -25,24 +25,30 @@
         tokens.forEach(function(propName) {
           currentObject = addPropertyToObjectIfNeeded(currentObject, propName);
         });
-
       }
       else {
         currentObject = addPropertyToObjectIfNeeded(currentObject, arg);
       }
+
+      return currentObject;
     });
 
-    return currentObject;
+    return objList;
   };
 
   // tests
   // with tokens
-  NGAT.namespace("NGAT.fred.betty.pebbles.flintsone");
+  var results = NGAT.namespace("NGAT.fred.betty.pebbles.flintsone",
+                 "NGAT.tom.atom.billy.fred");
   printObject(NGAT);
+
+  results.forEach(function(result){
+    result.foo = {};
+  });
 
   // without tokens
   NGAT.namespace("aarpMember");
-  printObject(global);
+  printObject(NGAT);
 
   /////////////////////////////////////////////////
   // Define helper functions for use in this module
